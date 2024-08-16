@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from decouple import config
+
 import django101.tasks.middlewares
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,8 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c0_zlpmqle0u#r*!0%j%@&@60-lb1vr7=2(czt%0w*y=j0)pvu'
-
+SECRET_KEY = config('MY_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -81,12 +82,12 @@ WSGI_APPLICATION = 'django101.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_bs_django101_db",
-        "USER": "postgres",
-        "PASSWORD": "admin",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "ENGINE": config('MY_ENGINE'),
+        "NAME": config('MY_DATABASE_NAME'),
+        "USER": config('MY_DATABASE_USERNAME'),
+        "PASSWORD": config('MY_DATABASE_PASSWORD'),
+        "HOST": config('MY_HOST'),
+        "PORT": config('MY_PORT'),
     }
 }
 
