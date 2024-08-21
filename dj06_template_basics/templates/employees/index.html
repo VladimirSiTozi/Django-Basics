@@ -1,0 +1,119 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/site.css">
+</head>
+<body>
+
+    <h1>Variables</h1>
+    <h3>With Dict</h3>
+    <p>Variable: {{ title }}</p>
+    <p>Person - Dict: {{ person.first_name }} {{ person.last_name }}</p>
+    <p>Person items: {{ person.items }}</p>
+    
+    <h3>With Class</h3>
+    <p>{{ person.first_name }} likes {{ person_obj.first_name }} a lot.</p>
+    <p>{{ person_obj.full_name }} likes her too.</p>
+
+    <hr>
+    <h1>Filter</h1>
+    <p>{{ person_obj.full_name }}</p>
+    <p>Person name TRUNCATE: {{ person_obj.full_name|truncatechars:4 }}</p>
+    <p>Names in JOINED from LIST: {{ names|join:', ' }}</p>
+    <p>If person age is NONE: {{ person_obj.age|default:'Unknown' }}</p>
+    <p>Length of LIST - "names" or sth else: {{ names|length }}</p>
+    
+    <hr>
+    <h1>Tags</h1>
+    
+    <h2>if-elif-else Tag</h2>
+    {% if ages %}
+        <p>If Ages in the list {{ ages|join:', ' }}</p>
+        <p>Else sth...</p>
+    {% endif %}
+
+    <h4>In tags we can use</h4>
+    <ul>
+        <li>"and", "or", "not"</li>
+        <li>"==", "!=", "<", ">", "<=", ">="</li>
+        <li>"in", "not in", "is", "is not"</li>
+    </ul>
+
+    <h2>for, for-empty Tags</h2>
+    <h4>Example:</h4>
+    {% for name in names%}
+        <p>{{ name }}</p>
+    {% endfor %}
+    
+    <h4>Example2:</h4>
+    
+    <ul>
+        {% for age in ages %}
+            {% if age <= 20 %}
+                <li class="young">{{ age }}</li>
+            {% elif age <= 40 %}
+                <li class="not-that-young">{{ age }}</li>
+            {% else %}
+                <li class="old">{{ age }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    
+    <h4>Example3: for-empty</h4>
+    
+    <ul>
+        {% for age in ages_empty %}
+            <li >{{ age }}</li>
+        {% empty %}
+           <li>No ages</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>url tag Tag</h2>
+    <h4>The most used tag. Used to redirect ONLY for internal urls.</h4>
+    <p>create a url redirecting to the given url with an index</p>
+    <p>{{ get_params }}</p>
+    <ul>
+        {% for age in ages %}
+            <li>
+                <a href="{% url 'index' %}?age={{ age }}">{{ age }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'employee_details' pk=7 %}">Go to employee</a>
+    
+    <h1>csrf_token Tag</h1>
+    <p>It is used for validation and security.</p>
+
+    <hr>
+    
+    <h1>Lorem Tag</h1>
+    <p>{% lorem 10 w %}</p>
+    <p>{% lorem 2 p %}</p>
+    
+    <h1>Date tag</h1>
+    <p>{% now "SHORT_DATETIME_FORMAT" %}</p>
+    <p>{% now "jS F Y H:i" %}</p>
+    
+
+    <hr>
+    <h1>Comments</h1>
+    {# comment here: #}
+    <p>{# comment here without the last "!" #!}</p>
+
+
+    <h1>Static Files</h1>
+    {% load static %}
+    
+    <img height="400px" src="{% static 'images/cat-its-mouth-open.jpg'%}" alt="">
+
+{#    <img src="static/images/cat-its-mouth-open.jpg" alt="">#}
+
+    
+</body>
+</html>

@@ -1,0 +1,22 @@
+body {
+    background-color: black;
+    padding: 50px;
+    color: whitesmoke;
+}
+
+h1 {
+    color: greenyellow;
+    font-size: 36px;
+}
+
+.young {
+    color: green;
+}
+
+.not-that-young {
+    color: orange;
+}
+
+.old {
+    color: red;
+}

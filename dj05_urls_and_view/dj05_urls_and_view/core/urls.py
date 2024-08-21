@@ -8,7 +8,7 @@ urlpatterns = [
         path('<int:pk>', index),
         path('<slug:slug>', index),
         path('to-index-with-params/', index, name='redirect_to_index_with_params'),
-        # path('<int:pk>/<slug:slug>', index, name='index_with_pk_and_slug'),
+
     ]))
     ,
 
