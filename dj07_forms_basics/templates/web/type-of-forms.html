@@ -1,0 +1,50 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Form Basics</title>
+</head>
+<body>
+
+    <form action="/" method="post"> <!-- action=Current_URL(default), method=get(default) -->
+        
+        <h1>Inputs</h1>
+        {# Inputs #}
+        <input type="text" name="first_name">
+        <input type="number" name="age">
+        <input type="url" name="blog">
+        <input type="email" name="personal_email">
+        <input type="password" name="password">
+
+        <input type="radio" name="gender">
+        <input type="checkbox" name="interests">
+
+        <hr>
+        
+        <h1>Text area</h1>
+        {# Text area #}
+        <textarea name="description"></textarea>
+        
+        <hr>
+        
+        <h1>Dropdowns</h1>
+        {# Dropdowns #}
+        <select name="interests">
+            <option value="1">Gaming</option>
+            <option value="2">Reading books</option>
+            <option value="3">Sport</option>
+            <option value="4">Watching Movies</option>
+            <option value="5">Girls</option>
+        </select>
+        
+        <hr>
+        
+        <h1>Button</h1>
+        {# Button #}
+        <button>Send</button>
+    </form>
+
+</body>
+</html>

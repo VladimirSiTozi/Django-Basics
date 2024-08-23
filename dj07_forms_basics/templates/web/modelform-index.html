@@ -1,0 +1,57 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ModelForm Class</title>
+</head>
+<body>
+    <h1>ModelForm Class</h1>
+
+    <form action="{% url 'index-models' %}" method="post">
+        {{ model_employee_form.as_p }}
+        
+        <button>Create</button>
+        
+        {% csrf_token %}
+    </form>
+    
+    <h3>Employee List</h3>
+    <ul>
+        {% for employee in employee_list %}
+            <li>{{ employee.first_name }} {{ employee.last_name }}, age: {{ employee.age }}, department: {{ employee.department }}
+                <a href="{% url 'update-employee' pk=employee.pk%}">Edit</a>
+            </li>
+        {% endfor %}
+    </ul>
+        
+    
+    <h6>*The current Form is Set and Working</h6>
+    <h4>Use Cases:</h4>
+    <p>When we want to represent the model.</p>
+    <ul>
+        <li>Converts a model into a form</li>
+        <li>Directly interacts with models by adding or editing them</li>
+        <li>E.g., registration form, newsletter article form, blog post form</li>
+    </ul>
+    
+    <hr>
+    
+    <h1>Normal Form</h1>
+    
+        {{ normal_employee_form.as_p }}
+    
+    <h4>Use Cases:</h4>
+    <p>When it doesn't interact with any model.</p>
+    <ul>
+        <li>Independent of a model</li>
+        <li>Does not directly interact with models</li>
+        <li>E.g., search form, contact form, subscription form</li>
+    </ul>
+
+    
+    
+
+</body>
+</html>
