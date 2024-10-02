@@ -15,63 +15,26 @@
     {# INCLUDE TAG #}
     {# include another html file #}
     {% include 'nav.html' %}
-
+    
     <div class="container">
-        
-        {# Normal text #}
-        <h1>Hello this is a Home template</h1>
-            
-        <h3>Form with CSRF Token</h3>
-        <form method="post">
+        <h1>Hello User</h1>
+        <form action="/" method="get">
+            Django Form
             {% csrf_token %}
-            <button>Click me!</button>
+            {{ my_form }}
+            <button>Submit</button>
         </form>
         
-        {# VARIABLES #}
-        <h3>Variables</h3>
-        <h5>Current time today is: {{ current_time }}</h5>
-        <p>Person name: {{ person.name }}</p>{# Variables from dict #}
-        <p>ID on index 1 is: {{ ids.1 }}</p> {# Variables from list #}
-        
-        {# FILTERS #}
-        <h3>Filters</h3>
-        <p>{{ some_text|truncatewords:10 }}</p> {# Filter - truncate after 10th word #}
-        <p>{{ some_text2|upper|truncatechars:10 }}</p> {# Chaining filters #}
-        <p>{{ some_text2|slugify }}</p>
-        <p>{{ ids|join:'-:-' }}</p>
-        <h5>Current time today is: {{ current_time|date:"d.m.Y h:i:s " }}</h5> {# Date filer #}
-        <p>{{ empty_text|default:'Nothing was passed' }}</p> {# if value is not none, else default #}
-    
-        {# TAGS #}
-        <h3>Tags</h3>
-        
-        {# if/elif/else #}
-        {% if some_text2 %}
-            <p>{{ some_text2 }}</p>
-        {% else %}
-            <p>{{ "No result" }}</p>
-        {% endif %}
-        
-        {# for #}
-        <h5>Footballers List:</h5>
-        <ul>
-            {% for name in names_list %}
-                <li>{{ name }}</li>
-            {% endfor %}
-        </ul>
-        
-        {# for/empty #}
-         <ul>
-                {% for name in empty_list %}
-                    <li>{{ name }}</li>
-                {% empty %}
-                    No user!
-                {% endfor %}
-         </ul>
-    
-        {# lorem tag #}
-        {% lorem 3 w %} {# 3 words #}
-        {% lorem 1 p %} {# 2 paragraphs #}
+        <form action="/" method="get">
+            HTML Form
+            {% csrf_token %}
+            <input type="text" name="person_name">
+            <input type="number" name="age">
+            <input type="password" name="password">
+            
+            <button>Click me</button> {# new submit button #}
+            <input type="submit" value="Submit"> {# old submit button #}
+        </form>
     </div>
 
 </body>
