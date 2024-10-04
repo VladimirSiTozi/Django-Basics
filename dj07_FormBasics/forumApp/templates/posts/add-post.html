@@ -17,29 +17,11 @@
     {% include 'nav.html' %}
     
     <div class="container">
-    
-    {% include 'posts/search-form.html' %}
-    
-    <h1>Class Forms Basics</h1>
-        {% for post in posts %}
-            <div class="post">
-                <h2>{{ post.title|capfirst }}</h2>
-                
-                {% if not post.content%}
-                    {% lorem 3 p %}
-                {% else %}
-                    {{ post.content|markdown}}
-                {% endif %}
-            
-                <div class="post-meta">
-                    <span>Posted by {{ post.author|default:"anonymous" }} on {{ post.created_at|date:'d-M-Y'}}</span>
-                </div>
-            </div>
-            
-        {% empty %}
-            <h1>No posts yet!</h1>
-        {% endfor %}
-    
+        <form action="{% url 'add-post' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button class="button-9">Submit</button>
+        </form>
     </div>
 
 </body>
