@@ -1,21 +1,26 @@
 from datetime import datetime
 
+from django.forms import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from forumApp.posts.forms import PersonForm, PostForm, PostDeleteForm, SearchForm
-from forumApp.posts.models import Post
+from forumApp.posts.forms import PersonForm, PostForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet
+from forumApp.posts.models import Post, Comment
 
 
 # Create your views here.
 
 def index(request):
+    post_form = modelform_factory(
+        Post,
+        fields=('title', 'content', 'author', 'languages')
+    )
 
     context = {
-        "my_form": '',
+        "my_form": post_form,
     }
 
-    return render(request, 'base.html', context)
+    return render(request, 'common/index.html', context)
 
 
 def dashboard(request):
@@ -36,7 +41,7 @@ def dashboard(request):
 
 
 def add_post(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, request.FILES or None)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -69,16 +74,47 @@ def delete_post(request, pk: int):
 
 def details_page(request, pk: int):
     post = Post.objects.get(pk=pk)
+    formset = CommentFormSet(request.POST or None)
+    comments = Comment.objects.filter(post_id=post.id)
+
+    if request.method == 'POST':
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data:
+                    comment = form.save(commit=False)
+                    comment.post = post
+                    comment.save()
+
+            return redirect('details-post', pk=post.id)
 
     context = {
-        'post': post
+        'post': post,
+        'formset': formset,
+        'comments': comments,
     }
 
     return render(request, 'posts/details-post.html', context)
 
 
 def edit_post(request, pk: int):
-    return HttpResponse()  # To do
+    post = Post.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = PostEditForm(request.POST, instance=post)
+
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+
+    else:
+        form = PostEditForm(instance=post)
+
+    context = {
+        'form': form,
+        'post': post
+    }
+
+    return render(request, 'posts/edit-post.html', context)
 
 
 def old_examples(request):

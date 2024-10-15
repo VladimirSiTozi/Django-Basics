@@ -1,7 +1,10 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.forms import formset_factory
 
 from forumApp.posts.choises import LanguageChoice
-from forumApp.posts.models import Post
+from forumApp.posts.mixins import DisableFieldsMixin
+from forumApp.posts.models import Post, Comment
 
 
 class PostForm(forms.ModelForm):
@@ -29,6 +32,35 @@ class PostForm(forms.ModelForm):
         #     }
         # }
 
+    def clean_author(self):
+        author = self.cleaned_data.get('author')
+
+        if author[0] != author[0].upper():
+            raise ValidationError('Author name should start with upper letter!')
+
+        return author
+
+    def clean(self):
+        cleaned_date = super().clean()
+
+        title = cleaned_date.get('title')
+        content = cleaned_date.get('content')
+
+        if title and content and title in content:
+            raise ValidationError('The post title cannot be included in the post content')
+
+        return cleaned_date
+
+    def save(self, commit=True):
+        post = super().save(commit=False)
+
+        post.title = post.title.capitalize()
+
+        if commit:
+            post.save()
+
+        return post
+
 
 class PostCreateForm(PostForm):
     pass
@@ -38,18 +70,18 @@ class PostEditForm(PostForm):
     pass
 
 
-class PostDeleteForm(PostForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields:
-            self.fields[field].disabled = True
+class PostDeleteForm(PostForm, DisableFieldsMixin):
+    disabled_fields = ('title', )
 
 
 class SearchForm(forms.Form):
     query = forms.CharField(
         label='',
         required=False,
+        # error_messages={
+        #     'required': 'Sorry, this field is required',
+        #     'max_length': 'Sorry max length is 10',
+        #     },
         max_length=100,
         widget=forms.TextInput(
             attrs={
@@ -132,3 +164,38 @@ class PersonForm(forms.Form):
     #     choices=STATUS_CHOICES
     # )
 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('author', 'content')
+
+        labels = {
+            'author': '',
+            'content': '',
+        }
+
+        error_messages = {
+            'author': {
+                'required': 'Author name is required!!!'
+            },
+            'content': {
+                'required': 'Content is required!!!'
+            }
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['author'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter your name...'
+        })
+
+        self.fields['content'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter your comment here...'
+        })
+
+
+CommentFormSet = formset_factory(CommentForm, extra=1)

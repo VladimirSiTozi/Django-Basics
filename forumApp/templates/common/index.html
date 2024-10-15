@@ -1,0 +1,20 @@
+{% extends 'common/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Hello user!</h1>
+    
+    
+    <h2 align="center">ModelForm Functions</h2>
+    <form>
+        {% crispy my_form %}
+    </form>
+    
+    <form>
+        {{ my_form }}
+    </form>
+    
+{% endblock %}
+
+
