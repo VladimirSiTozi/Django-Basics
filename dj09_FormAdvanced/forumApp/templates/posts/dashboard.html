@@ -1,0 +1,35 @@
+{% extends 'common/base.html' %}
+{% load markdown_extras %}
+
+{% block content %}
+    {% include 'common/nav.html' %}
+    
+    <div class="container">
+    
+    {% include 'posts/search-form.html' %}
+    
+    <h1>Class Forms Basics</h1>
+        {% for post in posts %}
+             <a id="post-url" href="{% url 'details-post' post.pk %}">
+                <div class="post">
+                    <h2>{{ post.title|capfirst }}</h2>
+                    
+                    {% if not post.content%}
+                        {% lorem 3 p %}
+                    {% else %}
+                        {{ post.content|markdown}}
+                    {% endif %}
+                
+                    <div class="post-meta">
+                        <span>Posted by {{ post.author|default:"anonymous" }} on {{ post.created_at|date:'d-M-Y'}}</span>
+                    </div>
+                </div>
+             </a>
+            
+        {% empty %}
+            <h1>No posts yet!</h1>
+        {% endfor %}
+    
+    </div>
+
+{% endblock %}
