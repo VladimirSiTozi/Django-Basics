@@ -3,7 +3,7 @@ from django.urls import path, include
 from forumApp.posts import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.Index.as_view(), name='index'),
     path('dashboard/', views.dashboard,  name='dashboard'),
     path('add-post/', views.add_post, name='add-post'),
     path('<int:pk>/', include([

@@ -3,6 +3,8 @@ from datetime import datetime
 from django.forms import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.decorators import classonlymethod
+from django.views import View
 
 from forumApp.posts.forms import PersonForm, PostForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet
 from forumApp.posts.models import Post, Comment
@@ -10,17 +12,46 @@ from forumApp.posts.models import Post, Comment
 
 # Create your views here.
 
-def index(request):
-    post_form = modelform_factory(
-        Post,
-        fields=('title', 'content', 'author', 'languages')
-    )
+class BaseView:
+    @classonlymethod
+    def as_view(cls):
 
-    context = {
-        "my_form": post_form,
-    }
+        def view(request, *args, **kwargs):
+            view_instance = cls()
 
-    return render(request, 'common/index.html', context)
+            return view_instance.dispatch(request, *args, **kwargs)
+
+        return view
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            return self.get(request, *args, **kwargs)
+        elif request.method == 'POST':
+            return self.post(request, *args, **kwargs)
+
+
+# Class base view
+class Index(View):
+    def get(self, request, *args, **kwargs):
+        context = {
+            "dynamic_time": datetime.now(),
+        }
+
+        return render(request, 'common/index.html', context)
+
+
+# Function base view
+# def index(request):
+#     post_form = modelform_factory(
+#         Post,
+#         fields=('title', 'content', 'author', 'languages')
+#     )
+#
+#     context = {
+#         "my_form": post_form,
+#     }
+#
+#     return render(request, 'common/index.html', context)
 
 
 def dashboard(request):

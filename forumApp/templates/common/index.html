@@ -4,15 +4,22 @@
 
 {% block content %}
     <h1>Hello user!</h1>
-    
+    {{ dynamic_time }}
     
     <h2 align="center">ModelForm Functions</h2>
-    <form>
-        {% crispy my_form %}
-    </form>
     
+{#    <h4>Crisply Form</h4>#}
+{#    <form>#}
+{#        {% crispy my_form %}#}
+{#        {% csrf_token %}#}
+{#        <button>Submit</button>#}
+{#    </form>#}
+    
+    <h4>Form</h4>
     <form>
         {{ my_form }}
+        {% csrf_token %}
+        <button class="button-9">Submit</button>
     </form>
     
 {% endblock %}
