@@ -4,23 +4,23 @@
 
 ### Plans
 
-1. [HTTP and Internet](#http-and-internet)
+1. [Internet and HTTP](#01-internet-and-http)
 
-2. [Django Introduction](#django-introduction)
+2. [Django Introduction](#02-django-introduction)
 
-3. [Urls And Views](#urls-and-views)
+3. [Urls And Views](#03-urls-and-views)
 
-4. [Template Basics](#template-basics)
+4. [Template Basics](#04-template-basics)
 
-5. [Forms Basics](#forms-basics)
+5. [Forms Basics](#05-forms-basics)
 
-6. [Templates Advanced](#templates-advanced)
+6. [Templates Advanced](#06-templates-advanced)
 
-7. [Forms Advanced](#forms-advanced)
+7. [Forms Advanced](#07-forms-advanced)
 
-8. [Class Based Views Basics](#class-based-views-basics)
+8. [Class Based Views Basics](#08-class-based-views-basics)
 
-9. [Class Based Views Advanced](#class-based-views-advanced)
+9. [Class Based Views Advanced](#09-class-based-views-advanced)
 
 ---
 
@@ -450,7 +450,7 @@
 
 ---
 
-### Forms Basics
+### 05. Forms Basics
 
 1. Какво са формите
    - Начин клиента да изпраща данни на съвъра
@@ -538,7 +538,7 @@
 
 ---
 
-### Templates Advanced
+### 06. Templates Advanced
 
 1. Template Inheritance
    - Позолява ни да разширим html файл
@@ -665,7 +665,7 @@
   
 ---
 
-### Forms Advanced
+### 07. Forms Advanced
 
 1. Django Validators
    - Трябва да е callable
@@ -931,7 +931,7 @@
    ``` 
 --- 
 
-### Classed Based Views - Basics
+### 08. Classed Based Views - Basics
 
 - Защо да ползваме CBV?
   - По-чисто е
@@ -1116,7 +1116,7 @@
 
 ---
 
-### Class Based Views - Advanced
+### 09. Class Based Views - Advanced
 
 1. ListView
    - Дава ни списък от елементи
