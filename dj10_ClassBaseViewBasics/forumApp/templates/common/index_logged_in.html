@@ -1,0 +1,16 @@
+{% extends 'common/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Hello user!</h1>
+    {{ dynamic_time }}
+
+    <h2>You are logged in!</h2>
+    <h6>static time - when the project is started - {{ static_time|date:'d/m/y H:i:s' }}</h6>
+    <h6>dynamic time - {{ dynamic_time|date:'d/m/y H:i:s' }}</h6>
+    
+    
+{% endblock %}
+
+
