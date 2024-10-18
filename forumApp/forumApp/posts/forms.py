@@ -66,12 +66,12 @@ class PostCreateForm(PostForm):
     pass
 
 
-class PostEditForm(PostForm):
-    pass
+class PostEditForm(PostForm, DisableFieldsMixin):
+    disabled_fields = ('author',)
 
 
 class PostDeleteForm(PostForm, DisableFieldsMixin):
-    disabled_fields = ('title', )
+    disabled_fields = ('title', 'content', 'author', 'languages', 'image')
 
 
 class SearchForm(forms.Form):

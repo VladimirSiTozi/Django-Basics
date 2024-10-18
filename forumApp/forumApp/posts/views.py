@@ -3,10 +3,13 @@ from datetime import datetime
 from django.forms import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import classonlymethod
 from django.views import View
+from django.views.generic import TemplateView, RedirectView, ListView, FormView, CreateView, DeleteView, UpdateView
 
-from forumApp.posts.forms import PersonForm, PostForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet
+from forumApp.posts.forms import PersonForm, PostForm, PostDeleteForm, SearchForm, PostEditForm, CommentFormSet, \
+    PostCreateForm
 from forumApp.posts.models import Post, Comment
 
 
@@ -18,16 +21,36 @@ class BaseView:
 
         def view(request, *args, **kwargs):
             view_instance = cls()
-
             return view_instance.dispatch(request, *args, **kwargs)
 
         return view
 
     def dispatch(self, request, *args, **kwargs):
-        if request.method == 'GET':
+        if request.method == "GET":
             return self.get(request, *args, **kwargs)
-        elif request.method == 'POST':
+        elif request.method == "POST":
             return self.post(request, *args, **kwargs)
+
+
+# Built in Django View
+class IndexView(TemplateView):
+    template_name = 'common/index.html'  # static way
+    extra_context = {
+        'static_time': datetime.now()
+    }  # static way
+
+    def get_context_data(self, **kwargs):  # dynamic way
+        context = super().get_context_data(**kwargs)
+
+        context['dynamic_time'] = datetime.now()
+
+        return context
+
+    def get_template_names(self):  # dynamic way
+        if self.request.user.is_authenticated:
+            return ['common/index_logged_in.html']
+        else:
+            return ['common/index.html']
 
 
 # Class base view
@@ -54,53 +77,96 @@ class Index(View):
 #     return render(request, 'common/index.html', context)
 
 
-def dashboard(request):
-    form = SearchForm(request.GET)
-    posts = Post.objects.all()
+class RedirectHomeView(RedirectView):
+    url = reverse_lazy()  # static way
 
-    if request.method == 'GET':
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            posts = posts.filter(title__icontains=query)
-
-    context = {
-        'posts': posts,
-        'form': form,
-    }
-
-    return render(request, 'posts/dashboard.html', context)
+    # def get_redirect_url(self, *args, **kwargs):  # dynamic way
+    #     # my logic, return redirect url
+    #     pass
 
 
-def add_post(request):
-    form = PostForm(request.POST or None, request.FILES or None)
+class DashboardView(ListView, FormView):
+    template_name = 'posts/dashboard.html'
+    context_object_name = 'posts'  # or by default - objects_list or post_list
+    form_class = SearchForm
+    success_url = reverse_lazy('dashboard')
 
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
+    def get_queryset(self):
+        queryset = Post.objects.all()
 
-    context = {
-        'form': form,
-    }
+        if 'query' in self.request.GET:
+            query = self.request.GET.get('query')
+            queryset = queryset.filter(title__icontains=query)
 
-    return render(request, 'posts/add-post.html', context)
+        return queryset
 
 
-def delete_post(request, pk: int):
-    post = Post.objects.get(pk=pk)
+# def dashboard(request):
+#     form = SearchForm(request.GET)
+#     posts = Post.objects.all()
+#
+#     if request.method == 'GET':
+#         if form.is_valid():
+#             query = form.cleaned_data['query']
+#             posts = posts.filter(title__icontains=query)
+#
+#     context = {
+#         'posts': posts,
+#         'form': form,
+#     }
+#
+#     return render(request, 'posts/dashboard.html', context)
 
-    form = PostDeleteForm(instance=post)
 
-    if request.method == 'POST':
-        post.delete()
-        return redirect('dashboard')
+class AddPostView(CreateView):
+    model = Post
+    form_class = PostCreateForm
+    template_name = 'posts/add-post.html'
+    success_url = reverse_lazy('dashboard')
 
-    context = {
-        'form': form,
-        'post': post
-    }
 
-    return render(request, 'posts/delete-post.html', context)
+# def add_post(request):
+#     form = PostForm(request.POST or None, request.FILES or None)
+#
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             form.save()
+#             return redirect('dashboard')
+#
+#     context = {
+#         'form': form,
+#     }
+#
+#     return render(request, 'posts/add-post.html', context)
+
+
+class DeleteFormView(DeleteView, FormView, ):
+    model = Post
+    template_name = 'posts/delete-post.html'
+    form_class = PostDeleteForm
+    success_url = reverse_lazy('dashboard')
+
+    def get_initial(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        post = Post.objects.get(pk=pk)
+        return post.__dict__
+
+
+# def delete_post(request, pk: int):
+#     post = Post.objects.get(pk=pk)
+#
+#     form = PostDeleteForm(instance=post)
+#
+#     if request.method == 'POST':
+#         post.delete()
+#         return redirect('dashboard')
+#
+#     context = {
+#         'form': form,
+#         'post': post
+#     }
+#
+#     return render(request, 'posts/delete-post.html', context)
 
 
 def details_page(request, pk: int):
@@ -127,25 +193,37 @@ def details_page(request, pk: int):
     return render(request, 'posts/details-post.html', context)
 
 
-def edit_post(request, pk: int):
-    post = Post.objects.get(pk=pk)
+class EditPostView(UpdateView):
+    model = Post
+    template_name = 'posts/edit-post.html'
+    # form_class = PostEditForm
+    success_url = reverse_lazy('dashboard')
 
-    if request.method == 'POST':
-        form = PostEditForm(request.POST, instance=post)
+    def get_form_class(self):
+        if self.request.user.is_superuser:
+            return modelform_factory(Post, fields=('title', 'content', 'author', 'languages'))
+        else:
+            return modelform_factory(Post, fields=('content',))
 
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-
-    else:
-        form = PostEditForm(instance=post)
-
-    context = {
-        'form': form,
-        'post': post
-    }
-
-    return render(request, 'posts/edit-post.html', context)
+# def edit_post(request, pk: int):
+#     post = Post.objects.get(pk=pk)
+#
+#     if request.method == 'POST':
+#         form = PostEditForm(request.POST, instance=post)
+#
+#         if form.is_valid():
+#             form.save()
+#             return redirect('dashboard')
+#
+#     else:
+#         form = PostEditForm(instance=post)
+#
+#     context = {
+#         'form': form,
+#         'post': post
+#     }
+#
+#     return render(request, 'posts/edit-post.html', context)
 
 
 def old_examples(request):
