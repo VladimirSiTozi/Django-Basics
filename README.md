@@ -931,7 +931,7 @@
    ``` 
 --- 
 
-### 08. Classed Based Views - Basics
+### 08. Classed Based Views Basics
 
 - Защо да ползваме CBV?
   - По-чисто е
@@ -1116,7 +1116,7 @@
 
 ---
 
-### 09. Class Based Views - Advanced
+### 09. Class Based Views Advanced
 
 1. ListView
    - Дава ни списък от елементи
