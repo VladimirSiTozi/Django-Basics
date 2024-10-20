@@ -1,0 +1,25 @@
+{% extends 'common/base.html' %}
+
+{% block styles %}
+    {{ block.super }} {# inherit the block styles and add more styles #}
+        <style>
+            h1 {
+                color: #405cf5;
+            }
+        </style>
+{% endblock %}
+
+{% block content %}
+{#{{ block.super  }} {# inherit the content inside the content from the parent, else  replace it#}
+
+    <div class="container">
+         <h1>Add Post</h1>
+        <form action="{% url 'add-post' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <button class="button-9">Submit</button>
+        </form>
+    </div>
+
+{% endblock %}
+
