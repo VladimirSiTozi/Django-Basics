@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # My apps
+    "SpeedApp.profiles.apps.ProfilesConfig",
+    "SpeedApp.cars.apps.CarsConfig",
+    "SpeedApp.common.apps.CommonConfig"
 ]
 
 MIDDLEWARE = [
@@ -121,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = (
-    BASE_DIR / 'static'
+    BASE_DIR / 'static',
 )
 
 # Default primary key field type
